@@ -99,7 +99,7 @@ export default function Navbar() {
 
   const navigate = useNavigate();
 
-  const API_BASE_URL = process.env.VITE_API_ADDRESS;
+  const API_BASE_URL = import.meta.env.VITE_API_ADDRESS;
 
   // useEffect(() => {
   //   if (isAuthenticated) {

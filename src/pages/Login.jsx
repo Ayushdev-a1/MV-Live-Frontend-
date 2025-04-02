@@ -33,8 +33,8 @@ const LoginButton = styled.button`
 export default function Login() {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
-  const API_BASE_URL = process.env.VITE_API_ADDRESS;
-  
+  const API_BASE_URL = import.meta.env.VITE_API_ADDRESS;
+
   useEffect(() => {
     if (isAuthenticated) {
       console.log("aage bdh phle se login h")

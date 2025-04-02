@@ -26,7 +26,7 @@ export default function LandingPage() {
   const [isHost, setIsHost] = useState(false);
   const [shareableLink, setShareableLink] = useState(null);
 
-  const API_BASE_URL = process.env.VITE_API_ADDRESS;
+  const API_BASE_URL = import.meta.env.VITE_API_ADDRESS;
 
   const handleCreateRoom = async () => {
     console.log(user?.googleId);

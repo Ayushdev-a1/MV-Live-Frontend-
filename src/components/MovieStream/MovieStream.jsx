@@ -39,7 +39,7 @@ const MovieStream = () => {
   const [copied, setCopied] = useState(false);
   const linkRef = useRef(null);
 
-  const API_BASE_URL = process.env.VITE_API_ADDRESS;
+  const API_BASE_URL = import.meta.env.VITE_API_ADDRESS;
   
   const openModal = () => {
     setIsOpen(true);

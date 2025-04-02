@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Add loading state
 
-  // API Base URL from environment variables
-  const API_BASE_URL = process.env.VITE_API_ADDRESS;
+  // Fix: Use import.meta.env instead of process.env
+  const API_BASE_URL = import.meta.env.VITE_API_ADDRESS;
 
   // Function to check authentication status
   const checkAuthStatus = async () => {
@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setIsAuthenticated(false);
       setUser(null);
+      console.error("Error checking auth status:", error);
     } finally {
       setLoading(false); // Set loading to false after checking status
     }
