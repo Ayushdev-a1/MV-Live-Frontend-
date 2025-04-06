@@ -15,52 +15,61 @@ export const AuthProvider = ({ children }) => {
   // Function to check authentication status
   const checkAuthStatus = async () => {
     try {
-      // For cross-origin requests, we need to ensure withCredentials is true
-      const res = await axios.get(`${API_BASE_URL}/auth/status`, { 
-        withCredentials: true,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+      // First try with session credentials
+      const response = await fetch('https://mv-live-backend.vercel.app/auth/status', {
+        credentials: 'include'
       });
       
-      if (res.data.authenticated) {
-        setIsAuthenticated(true);
-        setUser(res.data.user);
-        
-        // Store user in localStorage for persistence across page refreshes
-        localStorage.setItem('user', JSON.stringify(res.data.user));
-        
-        console.log("Auth status checked - authenticated:", res.data.user);
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
-        localStorage.removeItem('user');
-        console.log("Auth status checked - not authenticated");
-      }
-    } catch (error) {
-      console.error("Error checking auth status:", error);
+      const data = await response.json();
       
-      // Fallback to localStorage if available
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        try {
-          const parsedUser = JSON.parse(storedUser);
-          setUser(parsedUser);
-          setIsAuthenticated(true);
-          console.log("Using cached user data:", parsedUser);
-        } catch (e) {
-          console.error("Error parsing stored user:", e);
-          setIsAuthenticated(false);
-          setUser(null);
-          localStorage.removeItem('user');
-        }
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
+      if (data.authenticated) {
+        setUser(data.user);
+        setIsAuthenticated(true);
+        return true;
       }
-    } finally {
-      setLoading(false); // Set loading to false after checking status
+      
+      // If session fails, try with JWT token
+      const token = localStorage.getItem('token');
+      if (token) {
+        const tokenResponse = await fetch('https://mv-live-backend.vercel.app/auth/status', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        const tokenData = await tokenResponse.json();
+        
+        if (tokenData.authenticated) {
+          setUser(tokenData.user);
+          setIsAuthenticated(true);
+          return true;
+        }
+      }
+      
+      // As last resort, try with Google ID
+      const googleId = localStorage.getItem('googleId');
+      if (googleId) {
+        const googleResponse = await fetch('https://mv-live-backend.vercel.app/auth/status', {
+          headers: {
+            'Authorization': googleId
+          }
+        });
+        
+        const googleData = await googleResponse.json();
+        
+        if (googleData.authenticated) {
+          setUser(googleData.user);
+          setIsAuthenticated(true);
+          return true;
+        }
+      }
+      
+      setIsAuthenticated(false);
+      return false;
+    } catch (error) {
+      console.error('Auth status check failed:', error);
+      setIsAuthenticated(false);
+      return false;
     }
   };
 
