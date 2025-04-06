@@ -29,23 +29,23 @@ export default function LandingPage() {
 
   const API_BASE_URL = import.meta.env.VITE_API_ADDRESS || "http://localhost:5000";
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    const googleId = urlParams.get('googleId');
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const token = urlParams.get('token');
+  //   const googleId = urlParams.get('googleId');
     
-    if (token) {
-      localStorage.setItem('token', token);
-    }
-    if (googleId) {
-      localStorage.setItem('googleId', googleId);
-    }
+  //   if (token) {
+  //     localStorage.setItem('token', token);
+  //   }
+  //   if (googleId) {
+  //     localStorage.setItem('googleId', googleId);
+  //   }
     
-    // Clean up URL parameters
-    if (token || googleId) {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
+  //   // Clean up URL parameters
+  //   if (googleId) {
+  //     window.history.replaceState({}, document.title, window.location.pathname);
+  //   }
+  // }, []);
 
   const handleCreateRoom = async () => {
     if (!user || !user.googleId) {
