@@ -25,7 +25,7 @@ export default function LandingPage() {
   const [isPrivate, setIsPrivate] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_ADDRESS || "http://localhost:5000";
-
+//shi se nhi hoga
   const handleCreateRoom = async () => {
     if (!user || !user.googleId) {
       toast.error("You must be logged in to create a room");
