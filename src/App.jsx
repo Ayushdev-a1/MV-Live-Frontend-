@@ -46,36 +46,9 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
-        
-        <Route 
-          path="/create-room" 
-          element={
-            <ProtectedRoute>
-              <CreateRoom />
-            </ProtectedRoute>
-          } 
-        />
-        
-        <Route 
-          path="/join-room" 
-          element={
-            <ProtectedRoute>
-              <JoinRoom />
-            </ProtectedRoute>
-          } 
-        />
-        
+         
         <Route 
           path="/room" 
-          element={
-            <ProtectedRoute>
-              <MovieStream />
-            </ProtectedRoute>
-          } 
-        />
-        
-        <Route 
-          path="/stream" 
           element={
             <ProtectedRoute>
               <MovieStream />

@@ -74,17 +74,24 @@ export default function LandingPage() {
           }
         },
         {
-          headers: { Authorization: user.googleId },
+          headers: { 
+            Authorization: user.googleId || user._id
+          },
           withCredentials: true,
         }
       );
 
-      console.log("Room created:", res.data);
+      console.log("Room created response:", res.data);
 
-      const roomId = res.data.roomId || res.data.data?.room?.roomId;
+      // Extract roomId from response - try multiple possible locations
+      const roomId = res.data.roomId || 
+                    (res.data.data && res.data.data.room && res.data.data.room.roomId) || 
+                    (res.data.data && res.data.data.roomId);
       
       if (!roomId) {
+        console.error("Failed to extract roomId from response:", res.data);
         toast.error("Failed to get room ID from response");
+        setLoading(false);
         return;
       }
       
@@ -103,8 +110,11 @@ export default function LandingPage() {
       
       setcreateRoom(false);
     } catch (error) {
-      console.error("Error creating room:", error);
-      toast.error(error.response?.data?.message || "Failed to create room");
+      console.error("Create room error:", error);
+      const errorMessage = error.response?.data?.message || 
+                           (error.response?.data?.error) ||
+                           "Failed to create room";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
