@@ -66,6 +66,15 @@ function App() {
         />
         
         <Route 
+          path="/room" 
+          element={
+            <ProtectedRoute>
+              <MovieStream />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
           path="/stream" 
           element={
             <ProtectedRoute>

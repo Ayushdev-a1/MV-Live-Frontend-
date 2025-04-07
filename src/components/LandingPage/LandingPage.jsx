@@ -81,13 +81,19 @@ export default function LandingPage() {
 
       console.log("Room created:", res.data);
 
-      const roomId = res.data.roomId;
+      const roomId = res.data.roomId || res.data.data?.room?.roomId;
       
-      const generatedLink = `${window.location.origin}/join-room?roomId=${roomId}`;
+      if (!roomId) {
+        toast.error("Failed to get room ID from response");
+        return;
+      }
+      
+      const generatedLink = `${window.location.origin}/room?roomId=${roomId}`;
       setShareableLink(generatedLink);
       
       toast.success("🎉 Room Created Successfully!");
 
+      // Navigate to MovieStream with roomId
       navigate(`/room?roomId=${roomId}`, { 
         state: { 
           isHost: true,
@@ -134,7 +140,7 @@ export default function LandingPage() {
       
       if (joinLink.includes('?roomId=')) {
         roomId = new URLSearchParams(joinLink.split('?')[1]).get('roomId');
-      } else if (joinLink.includes('/join-room/')) {
+      } else if (joinLink.includes('/join-room/') || joinLink.includes('/room/')) {
         const urlParts = joinLink.split('/');
         roomId = urlParts[urlParts.length - 1];
       } else {
@@ -146,7 +152,13 @@ export default function LandingPage() {
         return;
       }
       
-      navigate(`/room?roomId=${roomId}`);
+      // Navigate directly to the MovieStream component
+      navigate(`/room?roomId=${roomId}`, {
+        state: {
+          isHost: false,
+          link: `${window.location.origin}/room?roomId=${roomId}`
+        }
+      });
       
       handleCloseModal();
     } catch (error) {
