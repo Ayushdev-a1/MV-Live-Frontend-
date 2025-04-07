@@ -60,7 +60,7 @@ export default function LandingPage() {
         }
       );
 
-      const { roomId, shareableLink } = res.data;
+      const { roomId, inviteLink } = res.data;
 
       if (!roomId) {
         throw new Error("Failed to get room ID from response");
@@ -72,7 +72,7 @@ export default function LandingPage() {
       navigate(`/room?roomId=${roomId}`, {
         state: {
           isHost: true,
-          link: shareableLink,
+          link: inviteLink,
         },
       });
 
