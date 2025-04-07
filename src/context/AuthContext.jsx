@@ -20,12 +20,16 @@ export const AuthProvider = ({ children }) => {
       const storedUser = localStorage.getItem('user');
       const headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Origin': window.location.origin // Add origin header explicitly
       };
+      
+      console.log(`Checking auth status with origin: ${window.location.origin}`);
       
       // If we have a token, add it to the headers
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+        console.log('Using token auth for status check');
       } 
       // Or if we have a stored user with googleId, try that
       else if (storedUser) {
@@ -33,6 +37,7 @@ export const AuthProvider = ({ children }) => {
           const userData = JSON.parse(storedUser);
           if (userData.googleId) {
             headers['Authorization'] = userData.googleId;
+            console.log('Using googleId auth for status check');
           }
         } catch (e) {
           console.error("Error parsing stored user:", e);
@@ -42,7 +47,8 @@ export const AuthProvider = ({ children }) => {
       // For cross-origin requests, we need to ensure withCredentials is true
       const res = await axios.get(`${API_BASE_URL}/auth/status`, { 
         withCredentials: true,
-        headers
+        headers,
+        timeout: 10000 // 10 second timeout
       });
       
       if (res.data.authenticated) {
